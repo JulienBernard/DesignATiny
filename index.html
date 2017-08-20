@@ -4,7 +4,37 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Design A Tiny - Design your own Tiny House from scratch!</title>
-    <link rel="stylesheet" href="http://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="http://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css"/>
+    <link rel="stylesheet" href="./dist/gridstack.css"/>
+    <!-- Script -->
+    <script src="./dist/jquery.min.js"></script>
+    <script src="./dist/jquery-ui.js"></script>
+    <script src="./dist/lodash.min.js"></script>
+    <script src="./dist/gridstack.js"></script>
+    <script src="./dist/gridstack.JQueryUI.js"></script>
+
+    <style type="text/css">
+        .grid-stack {
+            background: lightgoldenrodyellow;
+        }
+
+        .grid-stack-item-content {
+            color: #2c3e50;
+            text-align: center;
+            background-color: #18bc9c;
+        }
+
+        .grid-stack-item[data-gs-width="4"]  { width: 100% }
+        .grid-stack-item[data-gs-width="3"]  { width: 75% }
+        .grid-stack-item[data-gs-width="2"]  { width: 50% }
+        .grid-stack-item[data-gs-width="1"]  { width: 25% }
+
+        .grid-stack-item[data-gs-x="3"]  { left: 75% }
+        .grid-stack-item[data-gs-x="2"]  { left: 50% }
+        .grid-stack-item[data-gs-x="1"]  { left: 25% }
+    </style>
   </head>
   <body>
 
@@ -30,12 +60,22 @@
           <div class="callout primary">
             <div class="row column">
               <h1>Selectors</h1>
-              <p class="lead">List of elements (button "add a Bed" > add a card "Bed" to the grid)</p>
+              <p class="lead" style="font-size: 1em;">List of elements (button "add a Bed" > add a card "Bed" to the grid)</p>
+              <a class="button warning" id="add-widget-one" href="#">Add Widget (1x1)</a>
+              <a class="button warning" id="add-widget-two" href="#">Add Widget (2x2)</a>
+              <a class="button warning" id="add-widget" href="#">Add Widget (rdm)</a>
             </div>
           </div>
-          <div class="row small-up-2 medium-up-3 large-up-4">
-            <div class="medium-12 column">
-              <p>test</p>
+          <div class="row">
+            <div class="medium-12 column container-fluid">
+
+              <!-- GRID STACK -->
+              <br/>
+
+              <div class="grid-stack">
+              </div>
+              <!-- END GRID STACK -->
+
             </div>
           </div>
 
@@ -55,10 +95,76 @@
       </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script src="http://dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.js"></script>
     <script>
       $(document).foundation();
+    </script>
+    <script type="text/javascript">
+        $(function () {
+            var options = {
+                float: true
+            };
+            $('.grid-stack').gridstack(options);
+
+            new function () {
+                this.items = [
+                    {x: 0, y: 0, width: 2, height: 1},
+                    {x: 2, y: 3, width: 3, height: 2},
+                    {x: 2, y: 1, width: 2, height: 1}
+                ];
+
+                this.grid = $('.grid-stack').data('gridstack');
+
+                this.addNewWidgetOne = function () {
+                    var node = {
+                                x: 0,
+                                y: 0,
+                                width: 1,
+                                height: 1
+                            };
+                    this.grid.addWidget($('<div><div class="grid-stack-item-content" /><div/>'),
+                        node.x, node.y, node.width, node.height);
+                    return false;
+                }.bind(this);
+
+                this.addNewWidgetTwo = function () {
+                    var node = {
+                                x: 0,
+                                y: 0,
+                                width: 2,
+                                height: 2
+                            };
+                    this.grid.addWidget($('<div><div class="grid-stack-item-content" /><div/>'),
+                        node.x, node.y, node.width, node.height);
+                    return false;
+                }.bind(this);
+
+                this.addNewWidget = function () {
+                    var node = this.items.pop();
+                    this.grid.addWidget($('<div><div class="grid-stack-item-content" /><div/>'),
+                        node.x, node.y, node.width, node.height);
+                    return false;
+                }.bind(this);
+
+                /*
+                this.addNewWidget = function () {
+                    var node = this.items.pop() || {
+                                x: 12 * Math.random(),
+                                y: 5 * Math.random(),
+                                width: 1 + 3 * Math.random(),
+                                height: 1 + 3 * Math.random()
+                            };
+                    this.grid.addWidget($('<div><div class="grid-stack-item-content" /><div/>'),
+                        node.x, node.y, node.width, node.height);
+                    return false;
+                }.bind(this);
+                */
+
+                $('#add-widget-one').click(this.addNewWidgetOne);
+                $('#add-widget-two').click(this.addNewWidgetTwo);
+                $('#add-widget').click(this.addNewWidget);
+            };
+        });
     </script>
   </body>
 </html>
