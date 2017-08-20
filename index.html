@@ -16,24 +16,51 @@
     <script src="./dist/gridstack.JQueryUI.js"></script>
 
     <style type="text/css">
+
+        .container {
+          padding-top: 12px;
+          padding-bottom: 12px;
+          background-image: url("./img/plan-tiny-test.jpg");
+        }
+
         .grid-stack {
-            background: lightgoldenrodyellow;
+            /*background: lightgoldenrodyellow;*/
+            /*min-height: 380px;
+            height: 380px;
+            max-height: 380px;*/
         }
 
         .grid-stack-item-content {
             color: #2c3e50;
             text-align: center;
-            background-color: #18bc9c;
+            /*background-color: #18bc9c;*/
         }
 
-        .grid-stack-item[data-gs-width="4"]  { width: 100% }
-        .grid-stack-item[data-gs-width="3"]  { width: 75% }
-        .grid-stack-item[data-gs-width="2"]  { width: 50% }
-        .grid-stack-item[data-gs-width="1"]  { width: 25% }
+        .grid-stack .grid-stack {
+            /*margin: 0 -10px;*/
+            /*background: rgba(255, 255, 255, 0.4);*/
+            overflow:hidden;
+        }
 
-        .grid-stack-item[data-gs-x="3"]  { left: 75% }
-        .grid-stack-item[data-gs-x="2"]  { left: 50% }
-        .grid-stack-item[data-gs-x="1"]  { left: 25% }
+        .grid-stack .grid-stack .grid-stack-item-content {
+            border: 2px dotted #666;
+        }
+
+        .grid-stack > .grid-stack-item > .grid-stack-item-content {
+          /*left: 1px;
+          right: 1px;*/
+        }
+
+        .grid-stack > .grid-stack-item[data-gs-width="5"] !important { width: 100% }
+        .grid-stack > .grid-stack-item[data-gs-width="4"] !important { width: 80% }
+        .grid-stack > .grid-stack-item[data-gs-width="3"] !important { width: 60% }
+        .grid-stack > .grid-stack-item[data-gs-width="2"] !important { width: 40% }
+        .grid-stack > .grid-stack-item[data-gs-width="1"] !important { width: 20% }
+
+        .grid-stack > .grid-stack-item[data-gs-x="4"] !important { left: 80% }
+        .grid-stack > .grid-stack-item[data-gs-x="3"] !important { left: 60% }
+        .grid-stack > .grid-stack-item[data-gs-x="2"] !important { left: 40% }
+        .grid-stack > .grid-stack-item[data-gs-x="1"] !important { left: 20% }
     </style>
   </head>
   <body>
@@ -61,18 +88,28 @@
             <div class="row column">
               <h1>Selectors</h1>
               <p class="lead" style="font-size: 1em;">List of elements (button "add a Bed" > add a card "Bed" to the grid)</p>
-              <a class="button warning" id="add-widget-one" href="#">Add Widget (1x1)</a>
-              <a class="button warning" id="add-widget-two" href="#">Add Widget (2x2)</a>
-              <a class="button warning" id="add-widget" href="#">Add Widget (rdm)</a>
+              <a class="button warning" id="add-widget-one" data-size="1" data-height="1" href="#">Add Widget (1x1)</a>
+              <a class="button warning" id="add-widget-two" data-size="2" data-height="2" href="#">Add Widget (2x2)</a>
+              <a class="button warning" id="add-widget-rdm" href="#">Add Widget (rdm)</a>
             </div>
           </div>
           <div class="row">
-            <div class="medium-12 column container-fluid">
+            <div class="medium-12 column container">
 
               <!-- GRID STACK -->
-              <br/>
-
               <div class="grid-stack">
+                <div class="grid-stack-item" id="no-resizable" data-gs-x="0" data-gs-y="0" data-gs-width="12" data-gs-height="6" data-gs-no-resize="true" data-gs-no-move="true">
+                  <div class="grid-stack-item-content">
+                    <div class="grid-stack" id="grid-stack">
+                      <div class="grid-stack-item" data-gs-x="8" data-gs-y="0" data-gs-width="4" data-gs-height="5">
+                          <div class="grid-stack-item-content">Bed</div>
+                      </div>
+                      <div class="grid-stack-item" data-gs-x="4" data-gs-y="4" data-gs-width="2" data-gs-height="2">
+                          <div class="grid-stack-item-content">Table</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <!-- END GRID STACK -->
 
@@ -113,14 +150,17 @@
                     {x: 2, y: 1, width: 2, height: 1}
                 ];
 
-                this.grid = $('.grid-stack').data('gridstack');
+                this.grid = $('#grid-stack').data('gridstack');
 
                 this.addNewWidgetOne = function () {
+                    var widgetSize = $("#add-widget-one").attr('data-size');
+                    var widgetHeight = $("#add-widget-one").attr('data-height');
                     var node = {
                                 x: 0,
                                 y: 0,
-                                width: 1,
-                                height: 1
+                                width: widgetSize,
+                                height: widgetHeight,
+                                auto_position: true
                             };
                     this.grid.addWidget($('<div><div class="grid-stack-item-content" /><div/>'),
                         node.x, node.y, node.width, node.height);
@@ -128,18 +168,20 @@
                 }.bind(this);
 
                 this.addNewWidgetTwo = function () {
+                    var widgetSize = $("#add-widget-two").attr('data-size');
+                    var widgetHeight = $("#add-widget-two").attr('data-height');
                     var node = {
                                 x: 0,
                                 y: 0,
-                                width: 2,
-                                height: 2
+                                width: widgetSize,
+                                height: widgetHeight
                             };
                     this.grid.addWidget($('<div><div class="grid-stack-item-content" /><div/>'),
                         node.x, node.y, node.width, node.height);
                     return false;
                 }.bind(this);
 
-                this.addNewWidget = function () {
+                this.addNewWidgetRandom = function () {
                     var node = this.items.pop();
                     this.grid.addWidget($('<div><div class="grid-stack-item-content" /><div/>'),
                         node.x, node.y, node.width, node.height);
@@ -162,7 +204,7 @@
 
                 $('#add-widget-one').click(this.addNewWidgetOne);
                 $('#add-widget-two').click(this.addNewWidgetTwo);
-                $('#add-widget').click(this.addNewWidget);
+                $('#add-widget-rdm').click(this.addNewWidgetRandom);
             };
         });
     </script>
